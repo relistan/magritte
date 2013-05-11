@@ -20,10 +20,14 @@ Usage
 -----
 
 ####Simplest Use Case
-For purposes of showing a simple example, let's say you wanted to use
-the command line tool `grep` to filter some input data.  Yes, you can
-do this in Ruby, but it's a trivial and easy to understand example.
-To store the output into a `StringIO` you could do the following:
+For purposes of showing a simple example, let's say you wanted to
+use the command line tool `grep` to filter some input data.  Yes,
+you can do this natively in Ruby, but it's a trivial and easy to
+understand example. The normal use case would be wrapping an existing
+custom command line tool with Ruby. 
+
+But, back to `grep`. To store the output into a `StringIO` you could
+do the following:
 
 ```ruby
 buffer = StringIO.new
