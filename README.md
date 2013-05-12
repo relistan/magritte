@@ -50,6 +50,9 @@ Magritte::Pipe.from_input_string(data)
   .filtering_with('grep "relistan"')
 ```
 
+This works as above, however the input has been taken from the `data`
+string rather than a file.
+
 ####IO Stream as Input
 
 ```ruby
@@ -79,6 +82,10 @@ Magritte::Pipe.from_input_file('some.txt')
   .filtering_with('grep "relistan"')
 ```
 
+Each block of data that was read from the `stdout` of the sub-process
+`grep` is passed to the `out_to` block. Note that this is a block of
+data of uncertain size, and will not end on nice line boundaries.
+
 ####Line Buffering
 
 When passing data into your block, it's often much easier to work on
@@ -91,6 +98,23 @@ written by your `out_to` block as the `LineBuffer` handles this for you.
 
 ```ruby
 Magritte::Pipe.from_input_file('some.txt')
+  .line_by_line
+  .out_to { |data| puts data }
+  .filtering_with('grep "relistan"')
+```
+
+Note that line buffering does not apply to stream outputs, only to 
+output blocks as there is generally no reason to do this with a stream.
+
+####Line Buffer with Arbitrary Record Separators
+
+The default line ending character for the `LineBuffer` is the Unix 
+linefeed '\n' character.  You can, however, use any record separator
+you like.  It is done like this (e.g. for Windows line endings):
+
+```ruby
+Magritte::Pipe.from_input_file('some.txt')
+  .separated_by("\r\n")
   .line_by_line
   .out_to { |data| puts data }
   .filtering_with('grep "relistan"')
