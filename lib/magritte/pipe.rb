@@ -1,14 +1,13 @@
 require 'open3'
 require 'stringio'
 require_relative 'line_buffer'
+require_relative 'iostreams'
 
 # Acts as a two way pipe like the shell command line. We put
 # data into a sub-process and capture the output.
 
 module Magritte
   class Pipe
-    READ_BLOCK_SIZE = 512
-
     def initialize(input, output=nil)
       @input  = input
       @output = output
@@ -20,26 +19,35 @@ module Magritte
     end
 
     def self.from_input_stream(io)
-      new(io)
+      new(BlockStream.new(io))
     end
 
     def self.from_input_string(str)
-      new(StringIO.new(str || ""))
+      self.from_input_stream((StringIO.new(str)))
     end
 
     def out_to(io=nil, &block)
-      if block_given?
-        @output = Proc.new(&block)
+      unless block_given?
+        @output = BlockStream.new(io)
+        return self
+      end
+
+      proc = Proc.new(&block)
+      if @line_by_line
+        @output = LineBufferOutputStream.new(proc, @record_separator || "\n")
       else
-        @output = io if io
+        @output = ProcOutputStream.new(proc)
       end
 
       self
     end
 
+    def separated_by(record_separator)
+      @record_separator = record_separator
+    end
+
     def line_by_line
       @line_by_line = true
-      @buffer = LineBuffer.new
       self
     end
 
@@ -47,8 +55,8 @@ module Magritte
       raise "No output IO is set! Invoke out_to first!" unless @output
 
       Open3.popen2e(command) do |subproc_input, subproc_output, wait_thr|
-        @subproc_output = subproc_output
-        @subproc_input  = subproc_input
+        @subproc_output = BlockStream.new(subproc_output)
+        @subproc_input  = BlockStream.new(subproc_input)
 
         clear_buffers
 
@@ -63,7 +71,7 @@ module Magritte
 
           if read_ready
             read_from_subproc
-            send_output
+            write_output
           end
 
           # We close the input to signal to the sub-process that we are
@@ -95,69 +103,25 @@ module Magritte
     end
 
     def descriptor_array_for(stream)
-      stream.closed? ? nil : [stream]
-    end
-
-    def write_to(io, data)
-      return 0 if data.empty?
-      return 0 if io.closed?
-
-      begin
-        io.write_nonblock(data)
-      rescue Errno::EAGAIN
-        return 0
-      end
+      stream.closed? ? nil : [stream.io]
     end
 
     def write_to_subproc
-      bytes_written = write_to(@subproc_input, @write_data)
+      bytes_written = @subproc_input.write(@write_data)
       @write_data = @write_data[bytes_written..-1]
     end
 
     def read_from_subproc
-      @read_data += read_from(@subproc_output)
+      @read_data += @subproc_output.read
     end
 
     def read_from_input
-      @write_data += read_from(@input)
+      @write_data += @input.read
     end
 
-    def send_output
-      bytes_written = if @line_by_line && @output.is_a?(Proc)
-        send_output_line_by_line
-      else
-        send_output_block
-      end
-
+    def write_output
+      bytes_written = @output.write(@read_data)
       @read_data = @read_data[bytes_written..-1]
-    end
-
-    def send_output_line_by_line
-      bytes_written = @buffer.write(@read_data)
-      @buffer.each_line { |line| @output.call(line) }
-      bytes_written
-    end
-
-    def send_output_block
-      if @output.is_a?(Proc)
-        bytes_written = @output.call(@read_data)
-        raise 'output block must return number of bytes written!' unless bytes_written.is_a?(Fixnum)
-        bytes_written
-      else
-        write_to(@output, @read_data)
-      end
-
-    end
-
-    def read_from(io)
-      begin
-        data = io.read_nonblock(READ_BLOCK_SIZE) unless io.closed?
-      rescue EOFError
-        io.close
-      rescue Errno::EAGAIN
-      end
-
-      data || ""
     end
 
     def ready_to_close?
