@@ -7,6 +7,8 @@ to an IO or to a block. A simple line buffer class is also provided,
 to turn block writes to the output block into line-by-line output
 to make interacting with the sub-process easier.
 
+![Ceci n'est pas une pipe](https://raw.github.com/relistan/magritte/master/assets/ceci-nest-pas-une-pipe.jpg)
+
 What it Does
 ------------
 You have a sub-command that you want to put data into and from which
