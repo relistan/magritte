@@ -83,13 +83,13 @@ describe 'Magritte::Pipe' do
     end
   end
 
-  #it 'recovers when the end of the file was not a record separator' do
-  #  buffer = []
-  #  Magritte::Pipe.from_input_string("1234\n56789")
-  #    .line_by_line
-  #    .out_to { |p| buffer << p }.filtering_with('cat')
+  it 'recovers when the end of the file was not a record separator' do
+    pending 'this not yet implemented'
+    buffer = []
+    Magritte::Pipe.from_input_string("1234\n56789")
+      .line_by_line
+      .out_to { |p| buffer << p }.filtering_with('cat')
 
-  #  buffer.should == %w{ 1234 56789 }
-
-  #end
+    buffer.should == %w{ 1234 56789 }
+  end
 end
