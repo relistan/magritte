@@ -2,8 +2,9 @@ require 'magritte/pipe'
 require 'stringio'
 
 describe 'Magritte::Pipe' do
-  let(:infile) { File.join(File.dirname(__FILE__), 'fixtures/prisoner_of_zenda.txt') }
-  let(:output) { StringIO.new }
+  let(:infile)   { File.join(File.dirname(__FILE__), 'fixtures/prisoner_of_zenda.txt') }
+  let(:output)   { StringIO.new }
+  let(:no_input) { File.expand_path(File.join(File.dirname(__FILE__), 'fixtures', 'no_input.rb')) }
 
   context 'handling input' do
     it 'opens a file when passed a filename' do
@@ -67,7 +68,7 @@ describe 'Magritte::Pipe' do
     end
 
     it 'raises when the sub-process cannot receive data' do
-      expect { Magritte::Pipe.from_input_file(infile).out_to(output).filtering_with('iostat') }.to \
+      expect { Magritte::Pipe.from_input_file(infile).out_to(output).filtering_with(no_input) }.to \
         raise_error(Errno::EPIPE)
     end
 
