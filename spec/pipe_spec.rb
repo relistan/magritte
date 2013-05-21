@@ -25,6 +25,10 @@ describe 'Magritte::Pipe' do
 
       Magritte::Pipe.from_input_string('asdf')
     end
+
+    it 'handles nil input strings' do
+      expect { Magritte::Pipe.from_input_string(nil).out_to { |x| x.size }.filtering_with('cat') }.not_to raise_error
+    end
   end
 
   context 'handling output' do

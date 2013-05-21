@@ -23,7 +23,7 @@ module Magritte
     end
 
     def self.from_input_string(str)
-      self.from_input_stream((StringIO.new(str)))
+      self.from_input_stream((StringIO.new(str || "")))
     end
 
     def out_to(io=nil, &block)
