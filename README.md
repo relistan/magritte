@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/relistan/magritte.png)](https://travis-ci.org/relistan/magritte)
 Magritte
 ========
 This is a simple but powerful wrapper to Open3 pipes that makes it
