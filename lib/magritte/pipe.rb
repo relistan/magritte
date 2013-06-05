@@ -32,11 +32,10 @@ module Magritte
         return self
       end
 
-      proc = Proc.new(&block)
       if @line_by_line
-        @output = LineBufferOutputStream.new(proc, @record_separator || "\n")
+        @output = LineBufferOutputStream.new(block, @record_separator || "\n")
       else
-        @output = ProcOutputStream.new(proc)
+        @output = ProcOutputStream.new(block)
       end
 
       self
