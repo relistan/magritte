@@ -1,7 +1,7 @@
 require 'open3'
 require 'stringio'
-require_relative 'line_buffer'
-require_relative 'iostreams'
+require 'magritte/line_buffer'
+require 'magritte/iostreams'
 
 # Acts as a two way pipe like the shell command line. We put
 # data into a sub-process and capture the output.
