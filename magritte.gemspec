@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   EOS
   s.authors     = ["Karl Matthias"]
   s.email       = 'relistan@gmail.com'
-  s.files       =  `git ls-files`.split("\n")
+  s.files       =  Dir.glob("lib/**/*") + %w{ README.md LICENSE }
   s.homepage    = 'https://github.com/mydrive/magritte'
   s.require_path = 'lib'
   s.add_development_dependency 'rake'
