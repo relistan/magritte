@@ -1,3 +1,3 @@
-Dir[File.join(File.dirname(__FILE__), 'magritte', '*')].each do |file|
-  require file
-end
+$:.unshift File.expand_path('..', __FILE__)
+
+require 'magritte/pipe'
