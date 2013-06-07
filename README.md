@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/relistan/magritte.png)](https://travis-ci.org/relistan/magritte)
 Magritte
 ========
-This is a simple but powerful wrapper to Open3 pipes that makes it
-easy to handle two-way piping of data into and out of a sub-process.
+Magritte is a simple but powerful wrapper to Open3 pipes that makes
+it easy to handle two-way piping of data into and out of a sub-process.
 Various input IO wrappers are supported and output can either be
 to an IO or to a block. A simple line buffer class is also provided,
 to turn block writes to the output block into line-by-line output
