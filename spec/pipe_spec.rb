@@ -30,6 +30,11 @@ describe 'Magritte::Pipe' do
     it 'handles nil input strings' do
       expect { Magritte::Pipe.from_input_string(nil).out_to { |x| x.size }.filtering_with('cat') }.not_to raise_error
     end
+
+    it 'correctly expands paths for input files' do
+      File.should_receive(:expand_path).and_return(infile)
+      Magritte::Pipe.from_input_file(infile)
+    end
   end
 
   context 'handling output' do

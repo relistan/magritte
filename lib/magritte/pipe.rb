@@ -15,7 +15,7 @@ module Magritte
     end
 
     def self.from_input_file(infile)
-      self.from_input_stream(File.open(infile))
+      self.from_input_stream(File.open(File.expand_path(infile)))
     end
 
     def self.from_input_stream(io)
