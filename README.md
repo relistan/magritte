@@ -22,7 +22,7 @@ abstracts all of that behind an easy to use, fluent interface.
 Usage
 -----
 
-####Simplest Use Case
+#### Simplest Use Case
 For purposes of showing a simple example, let's say you wanted to
 use the command line tool `grep` to filter some input data.  Yes,
 you can do this natively in Ruby, but it's a trivial and easy to
@@ -42,7 +42,7 @@ Magritte::Pipe.from_input_file('some.txt')
 This example will take the contents of `some.txt` and stream it through
 `grep "relistan"`, storing the results in `buffer`.
 
-####String as Input
+#### String as Input
 
 ```ruby
 data   = "foo\nfoo\nrelistan\n"
@@ -56,7 +56,7 @@ Magritte::Pipe.from_input_string(data)
 This works as above, however the input has been taken from the `data`
 string rather than a file.
 
-####IO Stream as Input
+#### IO Stream as Input
 
 ```ruby
 buffer = StringIO.new
@@ -67,7 +67,7 @@ Magritte::Pipe.from_input_stream(socket)
   .filtering_with('grep "relistan"')
 ```
 
-####Output to a Block
+#### Output to a Block
 
 Rather than outputting the results to a stream, you can provide a block
 to `out_to` which will be invoked on each read of output data from the
@@ -89,7 +89,7 @@ Each block of data that was read from the `stdout` of the sub-process
 `grep` is passed to the `out_to` block. Note that this is a block of
 data of uncertain size, and will not end on nice line boundaries.
 
-####Line Buffering
+#### Line Buffering
 
 When passing data into your block, it's often much easier to work on
 it if you can access it line-by-line rather than as a stream of data.
@@ -109,7 +109,7 @@ Magritte::Pipe.from_input_file('some.txt')
 Note that line buffering does not apply to stream outputs, only to 
 output blocks as there is generally no reason to do this with a stream.
 
-####Line Buffer with Arbitrary Record Separators
+#### Line Buffer with Arbitrary Record Separators
 
 The default line ending character for the `LineBuffer` is the Unix 
 linefeed '\n' character.  You can, however, use any record separator
